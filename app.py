@@ -9,7 +9,7 @@ st.set_page_config(page_title="R³ Digital Twin", page_icon="🧬", layout="wide
 # --- 2. CUSTOM CSS: STABLE DARK THEME & TANK ANIMATION ---
 st.markdown("""
 <style>
-    /* Dark Sci-Fi Background (Stable, no falling elements) */
+    /* Dark Sci-Fi Background */
     .stApp {
         background: linear-gradient(180deg, #020b14 0%, #061826 50%, #03121f 100%);
         color: #e0e0e0;
@@ -28,9 +28,7 @@ st.markdown("""
 
     h1, h2, h3 { color: #00f2fe !important; text-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
 
-    /* =========================================
-       PMNDP WASTAGE TANK ANIMATION
-       ========================================= */
+    /* PMNDP WASTAGE TANK ANIMATION */
     .tank-container {
         position: relative;
         width: 100%;
@@ -66,7 +64,7 @@ st.markdown("""
     }
     @keyframes riseUp {
         0% { transform: translateY(100%); }
-        100% { transform: translateY(15%); } /* Fills tank to 85% */
+        100% { transform: translateY(15%); }
     }
     @keyframes wave {
         0% { transform: translateX(0) translateY(15%); }
@@ -80,10 +78,10 @@ st.title("🧬 Project R³: AI Digital Twin Controller")
 st.markdown("*Real-time bio-computational optimization of hemodialysis effluent upcycling.*")
 
 # --- 3. INTERACTIVE TABS ---
-tab_pmndp, tab1, tab2, tab3, tab4 = st.tabs(["🚨 National Scale (PMNDP)", "⚡ ED Optimizer", "❄️ Thermodynamics", "💰 Economics", "🏭 Routing"])
+tab_pmndp, tab1, tab2, tab3, tab4 = st.tabs(["🚨 National Scale", "⚡ ED Optimizer", "❄️ Thermodynamics", "💰 Economics", "🏭 AI Routing"])
 
 # ==========================================
-# TAB 0: PMNDP NATIONAL WASTAGE (INTERACTIVE)
+# TAB 0: PMNDP NATIONAL WASTAGE
 # ==========================================
 with tab_pmndp:
     st.subheader("The National Dialysis Waste Crisis")
@@ -102,10 +100,8 @@ with tab_pmndp:
     st.markdown("### 🌍 National Impact Simulator")
     st.markdown("Move the slider to see the economic and environmental impact of deploying Project R³ skids across Indian hospitals.")
     
-    # Interactive Slider for National Impact
     capture_rate = st.slider("Target National Hospital Adoption Rate (%)", min_value=1, max_value=100, value=25, step=1)
     
-    # Math based on total PMNDP potential
     liters_captured = (4.08 * capture_rate) / 100
     urea_mt = (7344 * capture_rate) / 100
     forex_saved = (28.5 * capture_rate) / 100
@@ -160,8 +156,8 @@ with tab2:
     col1, col2 = st.columns([2, 1])
     with col1:
         volumes = ['100L', '500L', '1,000L', '5,000L']
-        thermal_cost = [65, 325, 650, 3250] # 0.65 kWh/L
-        efc_cost = [12, 60, 120, 600]       # 0.12 kWh/L
+        thermal_cost = [65, 325, 650, 3250] 
+        efc_cost = [12, 60, 120, 600]       
         
         fig2 = go.Figure(data=[
             go.Bar(name='Traditional Thermal Boiling', x=volumes, y=thermal_cost, marker_color='#ff7e67'),
@@ -188,7 +184,6 @@ with tab2:
 # ==========================================
 with tab3:
     st.subheader("Enterprise Levelized Cost of Urea (LCOE)")
-    
     kwh_tariff = st.slider("Local Grid Tariff (₹ / kWh)", 4.0, 15.0, 8.0)
     
     with st.expander("🔬 View Financial Mechanism"):
@@ -211,23 +206,64 @@ with tab3:
     st.plotly_chart(fig3, use_container_width=True)
 
 # ==========================================
-# TAB 4: CRYSTALLOGRAPHIC ROUTING
+# TAB 4: CRYSTALLOGRAPHIC ROUTING (CRAZY UPGRADE)
 # ==========================================
 with tab4:
-    st.subheader("Automated Quality Control Router")
-    st.markdown("Adjust the terminal urea purity detected by the HPLC sensors.")
+    st.subheader("HPLC Sensor: Automated Quality Control")
+    st.markdown("Slide the detected purity level to simulate the Digital Twin routing the urea to the highest-paying market.")
     
-    purity = st.slider("Detected Crystal Purity (%)", 95.0, 99.9, 99.8, 0.1)
+    purity = st.slider("Detected Crystal Purity (%)", 95.0, 100.0, 99.8, 0.1)
     
+    # 1. Dynamic Variables based on purity
+    if purity >= 99.8:
+        route, color, icon, market_val = "AUTOMOTIVE (DEF/AdBlue)", "#00ff87", "🚚", "₹45,000 / MT"
+        desc = "Meets strict BS6 emissions standards. Highest commercial value."
+    elif purity >= 99.5:
+        route, color, icon, market_val = "MEDICAL COSMETICS", "#ff69b4", "🧴", "₹32,000 / MT"
+        desc = "Meets dermatological grade. Heavy metals successfully chelated."
+    else:
+        route, color, icon, market_val = "AGRICULTURE", "#ffa500", "🌾", "₹22,000 / MT"
+        desc = "Standard fertilizer grade. Safe for soil application."
+
+    col1, col2 = st.columns([1, 1.2])
+    
+    # 2. Interactive Speedometer Gauge
+    with col1:
+        fig4 = go.Figure(go.Indicator(
+            mode = "gauge+number",
+            value = purity,
+            domain = {'x': [0, 1], 'y': [0, 1]},
+            title = {'text': "Optical Purity Sensor", 'font': {'color': 'white', 'size': 18}},
+            number = {'suffix': "%", 'font': {'color': color, 'size': 40}},
+            gauge = {
+                'axis': {'range': [95, 100], 'tickwidth': 1, 'tickcolor': "white"},
+                'bar': {'color': color},
+                'bgcolor': "rgba(0,0,0,0)",
+                'borderwidth': 2,
+                'bordercolor': "gray",
+                'steps': [
+                    {'range': [95, 99.4], 'color': "rgba(255, 165, 0, 0.2)"},
+                    {'range': [99.5, 99.7], 'color': "rgba(255, 105, 180, 0.2)"},
+                    {'range': [99.8, 100], 'color': "rgba(0, 255, 135, 0.2)"}],
+                'threshold': {'line': {'color': "cyan", 'width': 4}, 'thickness': 0.75, 'value': 99.8}
+            }
+        ))
+        fig4.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color="white"), height=250, margin=dict(l=20, r=20, t=30, b=20))
+        st.plotly_chart(fig4, use_container_width=True)
+
+    # 3. Dynamic Neon Glowing Destination Card
+    with col2:
+        st.markdown(f"""
+        <div style="background: rgba(10, 15, 25, 0.8); border: 2px solid {color}; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 0 25px {color}; margin-top: 20px; transition: 0.3s;">
+            <h1 style="font-size: 3.5rem; margin: 0;">{icon}</h1>
+            <h3 style="color: {color}; margin: 10px 0; text-transform: uppercase;">ROUTE TO: {route}</h3>
+            <p style="color: #ccc; font-size: 1.1rem; margin-bottom: 15px;">{desc}</p>
+            <h2 style="color: white; margin: 0; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px;">Market Value: <span style="color: {color};">{market_val}</span></h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
     with st.expander("🔬 View Biological Purity Mechanism"):
         st.markdown("""
         **EDTA Chelation Verification**  
-        If Heavy Metals (Ca, Mg) or trace blood proteins bypass the cellulose membrane, purity drops below 99.5%. The Python logic automatically reroutes imperfect batches away from automotive markets to prevent engine catalytic converter destruction.
+        If Heavy Metals (Ca, Mg) or trace blood proteins bypass the phase 2 cellulose membrane, the EFC output purity drops below 99.5%. The Python logic automatically reroutes imperfect batches away from automotive markets to prevent engine catalytic converter destruction.
         """)
-    
-    if purity >= 99.8:
-        st.success("✅ **STATUS: 99.8% - ROUTE TO AUTOMOTIVE (AdBlue/DEF)**")
-    elif purity >= 99.5:
-        st.info("🧴 **STATUS: 99.5% - ROUTE TO MEDICAL COSMETICS**")
-    else:
-        st.warning("🌾 **STATUS: <99.5% - ROUTE TO AGRICULTURE (Fertilizer)**")
