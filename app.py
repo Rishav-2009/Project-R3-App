@@ -6,14 +6,13 @@ import plotly.graph_objects as go
 # --- 1. APP CONFIGURATION ---
 st.set_page_config(page_title="R³ Digital Twin", page_icon="🧬", layout="wide")
 
-# --- 2. CRAZY CUSTOM CSS: UREA EXTRACTION MOLECULAR BACKGROUND & TANK ANIMATION ---
+# --- 2. CUSTOM CSS: STABLE DARK THEME & TANK ANIMATION ---
 st.markdown("""
 <style>
-    /* Dark Sci-Fi Background */
+    /* Dark Sci-Fi Background (Stable, no falling elements) */
     .stApp {
         background: linear-gradient(180deg, #020b14 0%, #061826 50%, #03121f 100%);
         color: #e0e0e0;
-        overflow-x: hidden;
     }
     
     /* Glassmorphism Panels */
@@ -30,69 +29,12 @@ st.markdown("""
     h1, h2, h3 { color: #00f2fe !important; text-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
 
     /* =========================================
-       MOLECULAR SEPARATION BACKGROUND ANIMATION
-       ========================================= */
-    .molecule {
-        position: fixed;
-        border-radius: 50%;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite;
-        z-index: -1;
-    }
-    
-    /* Na+ Ions getting pulled Left (Electrodialysis) */
-    .salt-na {
-        width: 12px; height: 12px;
-        background: rgba(255, 60, 60, 0.5);
-        box-shadow: 0 0 15px rgba(255, 60, 60, 0.9);
-        animation-name: pullLeft;
-    }
-    
-    /* Cl- Ions getting pulled Right (Electrodialysis) */
-    .salt-cl {
-        width: 12px; height: 12px;
-        background: rgba(60, 255, 60, 0.5);
-        box-shadow: 0 0 15px rgba(60, 255, 60, 0.9);
-        animation-name: pullRight;
-    }
-    
-    /* Urea Molecules dropping to Crystallize (EFC) */
-    .urea-crystal {
-        width: 18px; height: 18px;
-        background: rgba(0, 242, 254, 0.7);
-        box-shadow: 0 0 20px rgba(0, 242, 254, 1);
-        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); /* Hexagon Shape */
-        animation-name: dropFreeze;
-    }
-
-    @keyframes pullLeft {
-        0% { top: -5%; left: 50%; opacity: 0; }
-        20% { opacity: 1; }
-        80% { opacity: 1; }
-        100% { top: 105%; left: 10%; opacity: 0; } /* Curves Left */
-    }
-    
-    @keyframes pullRight {
-        0% { top: -5%; left: 50%; opacity: 0; }
-        20% { opacity: 1; }
-        80% { opacity: 1; }
-        100% { top: 105%; left: 90%; opacity: 0; } /* Curves Right */
-    }
-    
-    @keyframes dropFreeze {
-        0% { top: -5%; left: 50%; opacity: 0; transform: scale(0.5) rotate(0deg); }
-        30% { opacity: 1; transform: scale(0.8) rotate(45deg); }
-        80% { opacity: 1; }
-        100% { top: 105%; left: 50%; opacity: 0; transform: scale(1.5) rotate(360deg); } /* Drops straight down & crystallizes */
-    }
-
-    /* =========================================
        PMNDP WASTAGE TANK ANIMATION
        ========================================= */
     .tank-container {
         position: relative;
         width: 100%;
-        height: 280px;
+        height: 260px;
         background: rgba(0, 0, 0, 0.5);
         border: 2px solid #ff3c3c;
         border-radius: 15px;
@@ -101,8 +43,8 @@ st.markdown("""
         align-items: center;
         justify-content: center;
         box-shadow: inset 0 0 30px rgba(255, 60, 60, 0.2), 0 0 20px rgba(255, 60, 60, 0.3);
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 10px;
+        margin-bottom: 30px;
     }
     .liquid-wave {
         position: absolute;
@@ -132,16 +74,6 @@ st.markdown("""
         100% { transform: translateX(-50%) translateY(15%); }
     }
 </style>
-
-<!-- INJECT BACKGROUND SEPARATION MOLECULES -->
-<div class="molecule salt-na" style="animation-duration: 5s; left: 48%; animation-delay: 0s;"></div>
-<div class="molecule salt-cl" style="animation-duration: 6s; left: 52%; animation-delay: 1s;"></div>
-<div class="molecule urea-crystal" style="animation-duration: 8s; left: 50%; animation-delay: 0.5s;"></div>
-<div class="molecule salt-na" style="animation-duration: 7s; left: 50%; animation-delay: 2.5s;"></div>
-<div class="molecule salt-cl" style="animation-duration: 5.5s; left: 49%; animation-delay: 3s;"></div>
-<div class="molecule urea-crystal" style="animation-duration: 9s; left: 51%; animation-delay: 4s;"></div>
-<div class="molecule urea-crystal" style="animation-duration: 10s; left: 50%; animation-delay: 6s;"></div>
-<div class="molecule salt-na" style="animation-duration: 6.5s; left: 51%; animation-delay: 5s;"></div>
 """, unsafe_allow_html=True)
 
 st.title("🧬 Project R³: AI Digital Twin Controller")
@@ -151,28 +83,40 @@ st.markdown("*Real-time bio-computational optimization of hemodialysis effluent 
 tab_pmndp, tab1, tab2, tab3, tab4 = st.tabs(["🚨 National Scale (PMNDP)", "⚡ ED Optimizer", "❄️ Thermodynamics", "💰 Economics", "🏭 Routing"])
 
 # ==========================================
-# TAB 0: PMNDP NATIONAL WASTAGE (NEW)
+# TAB 0: PMNDP NATIONAL WASTAGE (INTERACTIVE)
 # ==========================================
 with tab_pmndp:
     st.subheader("The National Dialysis Waste Crisis")
     st.markdown("Official data sourced from the **Pradhan Mantri National Dialysis Program (PMNDP)** via the National Health Systems Resource Centre (NHSRC).")
     
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.metric(label="New ESRD Patients Annually", value="2.2 Lakh+")
-    with col_b:
-        st.metric(label="Annual Dialysis Demand", value="3.4 Crore Sessions", delta="120 Liters / Session", delta_color="off")
-        
     st.markdown("""
     <div class="tank-container">
         <div class="liquid-wave"></div>
         <div class="tank-content">
             <h1 style='color: white; font-size: 3.5rem; margin:0; line-height: 1.2;'>4.08 BILLION LITERS</h1>
             <h3 style='color: #ffcccc; margin:0;'>of toxic, urea-rich effluent wasted annually.</h3>
-            <p style='color: #fff; font-weight: bold; margin-top: 15px;'>Project R³ intercepts this tank before it reaches municipal sewers.</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
+
+    st.markdown("### 🌍 National Impact Simulator")
+    st.markdown("Move the slider to see the economic and environmental impact of deploying Project R³ skids across Indian hospitals.")
+    
+    # Interactive Slider for National Impact
+    capture_rate = st.slider("Target National Hospital Adoption Rate (%)", min_value=1, max_value=100, value=25, step=1)
+    
+    # Math based on total PMNDP potential
+    liters_captured = (4.08 * capture_rate) / 100
+    urea_mt = (7344 * capture_rate) / 100
+    forex_saved = (28.5 * capture_rate) / 100
+    
+    col_a, col_b, col_c = st.columns(3)
+    with col_a:
+        st.metric(label="Toxic Waste Prevented", value=f"{liters_captured:.2f} Billion L", delta="Zero Liquid Discharge")
+    with col_b:
+        st.metric(label="Pure Urea Recovered", value=f"{urea_mt:,.0f} MT", delta="Domestic Supply")
+    with col_c:
+        st.metric(label="Forex Saved (INR)", value=f"₹{forex_saved:.2f} Cr", delta="Import Substitution")
 
 # ==========================================
 # TAB 1: ELECTRODIALYSIS OPTIMIZATION
